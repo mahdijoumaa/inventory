@@ -21,15 +21,18 @@ class SupplierController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-  //      $Suppliers = Supplier::all();
-  
-    // Get 10 suppliers per page
-    $suppliers = Supplier::orderBy('id')->paginate(3);
-        return view('supplier.index', compact('suppliers'));
+        $perPage = $request->query('perPage', 5); // default 5
 
+        if ($perPage == -1) {
+            // Get all suppliers without pagination
+            $suppliers = Supplier::orderBy('id')->get();
+        } else {
+            $suppliers = Supplier::orderBy('id')->paginate($perPage);
+        }
+
+        return view('supplier.index', compact('suppliers', 'perPage'));
     }
 
     /**
@@ -103,15 +106,15 @@ class SupplierController extends Controller
     {
         //
 
-         // Find the supplier by ID
-    $supplier = Supplier::find($id);
+        // Find the supplier by ID
+        $supplier = Supplier::find($id);
 
-    if (!$supplier) {
-        return redirect()->route('supplier.index')->with('error', 'Supplier not found.');
-    }
+        if (!$supplier) {
+            return redirect()->route('supplier.index')->with('error', 'Supplier not found.');
+        }
 
-    // Return the edit view with supplier data
-    return view('supplier.edit', compact('supplier'));
+        // Return the edit view with supplier data
+        return view('supplier.edit', compact('supplier'));
     }
 
     /**
@@ -123,40 +126,40 @@ class SupplierController extends Controller
 
         $supplier = Supplier::find($id);
 
-    if (!$supplier) {
-        return redirect()->route('supplier.index')->with('error', 'Supplier not found.');
-    }
-
-    // Validate request
-    $request->validate([
-        'supp_name' => 'required|string|unique:suppliers,supp_name,' . $supplier->id,
-        'supp_email' => 'required|email',
-        'supp_phone' => 'required|string',
-        'supp_address' => 'required|string',
-        'supp_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-    ]);
-
-    // Update supplier fields
-    $supplier->supp_name = $request->supp_name;
-    $supplier->supp_email = $request->supp_email;
-    $supplier->supp_phone = $request->supp_phone;
-    $supplier->supp_address = $request->supp_address;
-
-    // Handle image if uploaded
-    if ($request->hasFile('supp_image')) {
-        // Delete old image if exists
-        if ($supplier->supp_image && file_exists(public_path('upload/' . $supplier->supp_image))) {
-            unlink(public_path('upload/' . $supplier->supp_image));
+        if (!$supplier) {
+            return redirect()->route('supplier.index')->with('error', 'Supplier not found.');
         }
 
-        $imageName = time() . '.' . $request->supp_image->extension();
-        $request->supp_image->move(public_path('upload/'), $imageName);
-        $supplier->supp_image = $imageName;
-    }
+        // Validate request
+        $request->validate([
+            'supp_name' => 'required|string|unique:suppliers,supp_name,' . $supplier->id,
+            'supp_email' => 'required|email',
+            'supp_phone' => 'required|string',
+            'supp_address' => 'required|string',
+            'supp_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
 
-    $supplier->save();
+        // Update supplier fields
+        $supplier->supp_name = $request->supp_name;
+        $supplier->supp_email = $request->supp_email;
+        $supplier->supp_phone = $request->supp_phone;
+        $supplier->supp_address = $request->supp_address;
 
-    return redirect()->route('supplier.index')->with('success', 'Supplier updated successfully.');
+        // Handle image if uploaded
+        if ($request->hasFile('supp_image')) {
+            // Delete old image if exists
+            if ($supplier->supp_image && file_exists(public_path('upload/' . $supplier->supp_image))) {
+                unlink(public_path('upload/' . $supplier->supp_image));
+            }
+
+            $imageName = time() . '.' . $request->supp_image->extension();
+            $request->supp_image->move(public_path('upload/'), $imageName);
+            $supplier->supp_image = $imageName;
+        }
+
+        $supplier->save();
+
+        return redirect()->route('supplier.index')->with('success', 'Supplier updated successfully.');
     }
 
     /**
@@ -165,17 +168,17 @@ class SupplierController extends Controller
     public function destroy(string $id)
     {
         //
-         // Find the supplier by ID
-    $supplier = Supplier::find($id);
+        // Find the supplier by ID
+        $supplier = Supplier::find($id);
 
-    if (!$supplier) {
-        return redirect()->route('supplier.index')->with('error', 'Supplier not found.');
-    }
+        if (!$supplier) {
+            return redirect()->route('supplier.index')->with('error', 'Supplier not found.');
+        }
 
-    // Delete the supplier
-    $supplier->delete();
+        // Delete the supplier
+        $supplier->delete();
 
-    // Redirect back with success message
-    return redirect()->route('supplier.index')->with('success', 'Supplier deleted successfully.');
+        // Redirect back with success message
+        return redirect()->route('supplier.index')->with('success', 'Supplier deleted successfully.');
     }
 }

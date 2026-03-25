@@ -101,9 +101,56 @@
         <div class="card-footer d-flex justify-content-end gap-2">
             <a href="{{ url()->previous() }}" class="btn btn-secondary">Cancel</a>
             <button type="submit" class="btn btn-primary">Save Supplier</button>
+
+ 
+            
         </div>
 
     </form>
 </div>
+
+
+<script>
+document.querySelectorAll('.delete-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        let supplierId = this.getAttribute('data-id');
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This action cannot be undone!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Submit the form
+                const form = document.createElement('form');
+                form.action = '/supplier/' + supplierId;
+                form.method = 'POST';
+
+                // Add CSRF token
+                const token = document.createElement('input');
+                token.type = 'hidden';
+                token.name = '_token';
+                token.value = '{{ csrf_token() }}';
+                form.appendChild(token);
+
+                // Add DELETE method
+                const method = document.createElement('input');
+                method.type = 'hidden';
+                method.name = '_method';
+                method.value = 'DELETE';
+                form.appendChild(method);
+
+                document.body.appendChild(form);
+                form.submit();
+            }
+        });
+    });
+});
+</script>
 
 @endsection
