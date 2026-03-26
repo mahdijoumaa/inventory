@@ -23,7 +23,7 @@ class SupplierController extends Controller
      */
     public function index(Request $request)
     {
-        $perPage = $request->query('perPage', 5); // default 5
+      /*  $perPage = $request->query('perPage', 5); // default 5
 
         if ($perPage == -1) {
             // Get all suppliers without pagination
@@ -33,6 +33,14 @@ class SupplierController extends Controller
         }
 
         return view('supplier.index', compact('suppliers', 'perPage'));
+        */
+    // 1. Fetch all suppliers, optionally you can paginate
+    $suppliers = Supplier::orderBy('id', 'asc')->get();
+
+    // 2. Pass suppliers to the Blade view
+    return view('supplier.index2', compact('suppliers'));
+
+
     }
 
     /**

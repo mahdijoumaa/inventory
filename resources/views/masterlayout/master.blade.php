@@ -60,6 +60,8 @@
     <!-- Dropify CSS -->
 <link rel="stylesheet" href="{{ asset('plugins/dropify/css/dropify.min.css') }}">
 
+    <!--DataTables 2.3.7 is the current stable release of DataTables. -->
+<link rel="stylesheet" href="https://cdn.datatables.net/2.3.7/css/dataTables.bootstrap5.min.css">
     
 </head>
 <!--end::Head-->
@@ -284,27 +286,14 @@
 
     <!--begin::App Main-->
     <main class="app-main">
+
       <!--begin::App Content Header-->
-      <div class="app-content-header">
-        <!--begin::Container-->
-        <div class="container-fluid">
-          <!--begin::Row-->
-          <div class="row">
-            <div class="col-sm-6">
-              <h3 class="mb-0">Dashboard</h3>
-            </div>
-            <div class="col-sm-6">
-              <ol class="breadcrumb float-sm-end">
-                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
-              </ol>
-            </div>
-          </div>
-          <!--end::Row-->
-        </div>
-        <!--end::Container-->
-      </div>
-      <!--end::App Content Header-->
+
+
+
+
+       <!--end::App Content Header-->
+
       <!--begin::App Content-->
       <div class="app-content">
         <!--begin::Container-->
@@ -571,6 +560,11 @@
 
 <!-- Dropify JS -->
 <script src="{{ asset('plugins/dropify/js/dropify.min.js') }}"></script>
+
+
+    <!--DataTables 2.3.7 is the current stable release of DataTables. -->
+    <script src="https://cdn.datatables.net/2.3.7/js/dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/2.3.7/js/dataTables.bootstrap5.min.js"></script>
 
 @yield('scripts')
   
