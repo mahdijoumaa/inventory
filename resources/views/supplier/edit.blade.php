@@ -2,61 +2,118 @@
 
 @section('content')
 
-<div class="container-fluid">
-    <div class="card card-primary card-outline mb-4">
-        <div class="card-header">
-            <h3 class="card-title mb-0">Edit Supplier</h3>
-        </div>
+<div class="card card-primary card-outline mb-4">
 
-        <form action="{{ route('supplier.update', $supplier->id) }}" method="POST" enctype="multipart/form-data">
-            @csrf
-            @method('PUT')
+    <!-- Card Header -->
+    <div class="card-header">
+        <h3 class="card-title">Edit Supplier</h3>
+    </div>
 
-            <div class="card-body">
-                <!-- Supplier Name -->
-                <div class="form-group">
-                    <label for="supp_name">Supplier Name</label>
-                    <input type="text" name="supp_name" id="supp_name" class="form-control" value="{{ old('supp_name', $supplier->supp_name) }}" required>
-                </div>
+    <!-- Form Start -->
+    <form action="{{ route('supplier.update', $supplier->id) }}" method="POST" enctype="multipart/form-data">
+        @csrf
+        @method('PUT')
 
-                <!-- Supplier Email -->
-                <div class="form-group">
-                    <label for="supp_email">Email</label>
-                    <input type="email" name="supp_email" id="supp_email" class="form-control" value="{{ old('supp_email', $supplier->supp_email) }}" required>
-                </div>
+        <!-- 🔴 Global Errors -->
+        @if ($errors->any())
+            <div class="alert alert-danger mx-3 mt-3">
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
-                <!-- Supplier Phone -->
-                <div class="form-group">
-                    <label for="supp_phone">Phone</label>
-                    <input type="text" name="supp_phone" id="supp_phone" class="form-control" value="{{ old('supp_phone', $supplier->supp_phone) }}" required>
-                </div>
+        <div class="card-body">
 
-                <!-- Supplier Address -->
-                <div class="form-group">
-                    <label for="supp_address">Address</label>
-                    <input type="text" name="supp_address" id="supp_address" class="form-control" value="{{ old('supp_address', $supplier->supp_address) }}" required>
-                </div>
+            <!-- Supplier Name -->
+            <div class="mb-3">
+                <label class="form-label">Supplier Name</label>
+                <input type="text" name="supp_name"
+                       value="{{ old('supp_name', $supplier->supp_name) }}"
+                       class="form-control @error('supp_name') is-invalid @enderror">
 
-                <!-- Supplier Image -->
-                <div class="form-group">
-                    <label for="supp_image">Image</label>
-                    <input type="file" name="supp_image" id="supp_image" class="form-control">
-                    @if($supplier->supp_image)
-                        <img src="{{ asset('upload/'.$supplier->supp_image) }}" alt="Supplier Image" class="img-thumbnail mt-2" width="100">
-                    @endif
-                </div>
+                @error('supp_name')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
             </div>
 
-     
-            
-            <!-- Card Footer -->
-        <div class="card-footer d-flex justify-content-end gap-2">
-            <a href="{{ url()->previous() }}" class="btn btn-secondary">Cancel</a>
-            <button type="submit" class="btn btn-primary">Save Supplier</button>
+            <!-- Email -->
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" name="supp_email"
+                       value="{{ old('supp_email', $supplier->supp_email) }}"
+                       class="form-control @error('supp_email') is-invalid @enderror">
+
+                @error('supp_email')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <!-- Phone -->
+            <div class="mb-3">
+                <label class="form-label">Phone</label>
+                <input type="text" name="supp_phone"
+                       value="{{ old('supp_phone', $supplier->supp_phone) }}"
+                       class="form-control @error('supp_phone') is-invalid @enderror">
+
+                @error('supp_phone')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <!-- Address -->
+            <div class="mb-3">
+                <label class="form-label">Address</label>
+                <input type="text" name="supp_address"
+                       value="{{ old('supp_address', $supplier->supp_address) }}"
+                       class="form-control @error('supp_address') is-invalid @enderror">
+
+                @error('supp_address')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <!-- Image -->
+            <div class="mb-3">
+                <label class="form-label">Upload Image</label>
+
+                <input type="file"
+                       name="supp_image"
+                       class="dropify @error('supp_image') is-invalid @enderror"
+                       accept="image/*"
+                       data-max-file-size="2M"
+                       data-allowed-file-extensions="jpg jpeg png"
+                       data-default-file="{{ asset('upload/' . ($supplier->supp_image ?? 'no_image.png')) }}">
+
+                @error('supp_image')
+                    <div class="text-danger mt-1">{{ $message }}</div>
+                @enderror
+            </div>
+
         </div>
-      
-      
-        </form>
-    </div>
+
+        <!-- Footer -->
+        <div class="card-footer d-flex justify-content-end gap-2">
+            <a href="{{ route('supplier.index') }}" class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="btn btn-primary">Update Supplier</button>
+        </div>
+
+    </form>
 </div>
+
+@endsection
+
+@section('scripts')
+<script>
+$('.dropify').dropify({
+    messages: {
+        default: 'Drag and drop an image or click',
+        replace: 'Drag and drop or click to replace',
+        remove:  'Remove',
+        error:   'Oops, something went wrong.'
+    }
+});
+</script>
 @endsection

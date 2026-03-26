@@ -49,45 +49,55 @@ class SupplierController extends Controller
      */
     public function store(Request $request)
     {
-        //
+    $request->validate([
+    'supp_name'    => 'required|string|unique:suppliers',
+    'supp_email'   => 'required|string',
+    'supp_phone'   => 'required|string',
+    'supp_address' => 'required|string',
+    'supp_image'   => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+]);
 
-        $request->validate([
-            'supp_name' => 'required|string|unique:suppliers',
-            'supp_email' => 'required|string',
-            'supp_phone' => 'required|string',
-            'supp_address' => 'required|string',
-            'supp_image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
-        ]);
+// ✅ Default image
+$imageName = 'no_image.png';
 
+// ✅ Upload folder path
+$path = public_path('upload');
 
-        // ✅ Create manager (v3 style)
-        $manager = new ImageManager(new Driver());
+// ✅ Create folder if not exists
+if (!file_exists($path)) {
+    mkdir($path, 0777, true);
+}
 
-        // ✅ Read image (THIS replaces make())
-        $image = $manager->read($request->file('supp_image'));
+// ✅ Check if user uploaded image
+if ($request->hasFile('supp_image')) {
 
-        // ✅ Resize (v3 uses scale instead of resize)
-        //  $image->scale(width: 600);
+    // Create manager
+    $manager = new ImageManager(new Driver());
 
-        // Generate filename
-        $imageName = time() . '.' . $request->file('supp_image')->getClientOriginalExtension();
+    // Read image
+    $image = $manager->read($request->file('supp_image'));
 
-        // ✅ Save image
-        $image->save(public_path('upload/' . $imageName));
+    // Optional resize (recommended)
+    // $image->scale(width: 600);
 
+    // Unique filename
+    $imageName = uniqid() . '.' . $request->file('supp_image')->getClientOriginalExtension();
 
+    // Save image
+    $image->save($path . '/' . $imageName);
+}
 
-        $supplier = new Supplier();
-        $supplier->supp_name = $request->supp_name;
-        $supplier->supp_email = $request->supp_email;
-        $supplier->supp_phone = $request->supp_phone;
-        $supplier->supp_address = $request->supp_address;
-        $supplier->supp_image = $imageName;
-        $supplier->save();
+// ✅ Save to DB
+Supplier::create([
+    'supp_name'    => $request->supp_name,
+    'supp_email'   => $request->supp_email,
+    'supp_phone'   => $request->supp_phone,
+    'supp_address' => $request->supp_address,
+    'supp_image'   => $imageName,
+]);
 
-
-
-        return redirect()->route('supplier.index')->with('success', '');
+return redirect()->route('supplier.index')
+    ->with('success', 'Supplier added successfully ✅');
 
     }
 
@@ -124,42 +134,67 @@ class SupplierController extends Controller
     {
         //
 
-        $supplier = Supplier::find($id);
+      $supplier = Supplier::find($id);
 
-        if (!$supplier) {
-            return redirect()->route('supplier.index')->with('error', 'Supplier not found.');
+    if (!$supplier) {
+        return redirect()->route('supplier.index')
+            ->with('error', 'Supplier not found.');
+    }
+
+    // ✅ Validation
+    $request->validate([
+        'supp_name'    => 'required|string|unique:suppliers,supp_name,' . $supplier->id,
+        'supp_email'   => 'required|email',
+        'supp_phone'   => 'required|string',
+        'supp_address' => 'required|string',
+        'supp_image'   => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+    ]);
+
+    // ✅ Update basic fields
+    $supplier->supp_name    = $request->supp_name;
+    $supplier->supp_email   = $request->supp_email;
+    $supplier->supp_phone   = $request->supp_phone;
+    $supplier->supp_address = $request->supp_address;
+
+    // ✅ Upload folder
+    $path = public_path('upload');
+
+    // ✅ Ensure folder exists
+    if (!file_exists($path)) {
+        mkdir($path, 0777, true);
+    }
+
+    // ✅ Handle image upload
+    if ($request->hasFile('supp_image')) {
+
+        // 🔥 Delete old image (if not default)
+        if ($supplier->supp_image != 'no_image.png' &&
+            file_exists($path . '/' . $supplier->supp_image)) {
+
+            unlink($path . '/' . $supplier->supp_image);
         }
 
-        // Validate request
-        $request->validate([
-            'supp_name' => 'required|string|unique:suppliers,supp_name,' . $supplier->id,
-            'supp_email' => 'required|email',
-            'supp_phone' => 'required|string',
-            'supp_address' => 'required|string',
-            'supp_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-        ]);
+        // ✅ Intervention Image
+        $manager = new ImageManager(new Driver());
+        $image   = $manager->read($request->file('supp_image'));
 
-        // Update supplier fields
-        $supplier->supp_name = $request->supp_name;
-        $supplier->supp_email = $request->supp_email;
-        $supplier->supp_phone = $request->supp_phone;
-        $supplier->supp_address = $request->supp_address;
+        // Optional resize
+        // $image->scale(width: 600);
 
-        // Handle image if uploaded
-        if ($request->hasFile('supp_image')) {
-            // Delete old image if exists
-            if ($supplier->supp_image && file_exists(public_path('upload/' . $supplier->supp_image))) {
-                unlink(public_path('upload/' . $supplier->supp_image));
-            }
+        // Unique filename
+        $imageName = uniqid() . '.' . $request->file('supp_image')->getClientOriginalExtension();
 
-            $imageName = time() . '.' . $request->supp_image->extension();
-            $request->supp_image->move(public_path('upload/'), $imageName);
-            $supplier->supp_image = $imageName;
-        }
+        // Save image
+        $image->save($path . '/' . $imageName);
 
-        $supplier->save();
+        // Save to DB
+        $supplier->supp_image = $imageName;
+    }
 
-        return redirect()->route('supplier.index')->with('success', 'Supplier updated successfully.');
+    $supplier->save();
+
+    return redirect()->route('supplier.index')
+        ->with('success', 'Supplier updated successfully ✅');
     }
 
     /**

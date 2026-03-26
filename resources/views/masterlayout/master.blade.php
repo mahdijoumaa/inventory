@@ -56,6 +56,11 @@
   <!-- jsvectormap -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/css/jsvectormap.min.css"
     integrity="sha256-+uGLJmmTKOqBr+2E6KDYs/NRsHxSkONXFHUL0fy2O/4=" crossorigin="anonymous" />
+
+    <!-- Dropify CSS -->
+<link rel="stylesheet" href="{{ asset('plugins/dropify/css/dropify.min.css') }}">
+
+    
 </head>
 <!--end::Head-->
 <!--begin::Body-->
@@ -330,6 +335,10 @@
   </div>
   <!--end::App Wrapper-->
   <!--begin::Script-->
+
+ 
+  
+
   <!--begin::Third Party Plugin(OverlayScrollbars)-->
   <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/browser/overlayscrollbars.browser.es6.min.js"
     crossorigin="anonymous"></script>
@@ -555,6 +564,15 @@
 
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+
+
+<!-- jQuery (required) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Dropify JS -->
+<script src="{{ asset('plugins/dropify/js/dropify.min.js') }}"></script>
+
+@yield('scripts')
   
   <!--end::Script-->
 </body>
