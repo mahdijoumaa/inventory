@@ -7,7 +7,17 @@
     <div class="card">
        <div class="card-header d-flex justify-content-between align-items-center">
             <h3>Suppliers List</h3>
-            <a href="{{ route('supplier.create') }}" class="btn btn-primary btn-sm">Add Supplier</a>
+
+
+                         <!-- Add Button on the far right of the page -->
+         <div class="d-flex justify-content-end w-100 position-absolute top-0 end-0 p-3">
+    <a href="{{ route('supplier.create') }}" 
+       class="btn btn-primary"
+       style="font-size: 18px; padding: 12px 24px;">
+        <i class="fas fa-plus-circle me-2"></i> Add Supplier
+    </a>
+</div>
+           <!-- <a href="{{ route('supplier.create') }}" class="btn btn-primary btn-sm">Add Supplier</a> -->
         </div>
         <div class="card-body">
             <table id="myTable" class="table table-bordered table-striped w-100">

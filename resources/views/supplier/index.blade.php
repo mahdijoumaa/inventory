@@ -2,9 +2,13 @@
 
 @section('content')
 
-    <div class="container-fluid">
-        <div class="card card-primary card-outline mb-4">
-            <div class="card-header">
+<div class="container-fluid mt-4">
+
+    <div class="card">
+
+        <div class="card-header d-flex justify-content-between align-items-center">
+     
+        
                 <!-- Title -->
                 <h3 class="card-title mb-0">Suppliers List</h3>
 
@@ -114,6 +118,8 @@
 
             </div>
         </div>
+    </div>
+   
     </div>
     </div>
 

@@ -2,11 +2,13 @@
 
 @section('content')
 
-    <div class="card card-primary card-outline mb-4">
+<div class="container-fluid mt-4">
+
+     <div class="card">
 
         <!-- Card Header -->
-        <div class="card-header">
-            <h3 class="card-title">Add Supplier</h3>
+         <div class="card-header d-flex justify-content-between align-items-center">
+                        <h3>Suppliers Information</h3>
         </div>
 
         <!-- Form Start -->
@@ -95,7 +97,7 @@
 
         </form>
     </div>
-
+</div>
 
     <script>
         document.querySelectorAll('.delete-btn').forEach(button => {
@@ -151,7 +153,8 @@ $('.dropify').dropify({
         remove:  'Remove',
         error:   'Oops, something went wrong.'
     }
-});
+}); 
 </script>
+
 
 @endsection
