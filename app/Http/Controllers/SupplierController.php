@@ -127,7 +127,7 @@ return redirect()->route('supplier.index')
         //
 
         // Find the supplier by ID
-        $supplier = Supplier::find($id);
+        $supplier = Supplier::findOrFail($id);
 
         if (!$supplier) {
             return redirect()->route('supplier.index')->with('error', 'Supplier not found.');
