@@ -55,6 +55,35 @@
         </li>
 
 
+
+         <li class="nav-item {{ request()->routeIs('customer.*') ? 'menu-open' : '' }}">
+          <a href="#" class="nav-link {{ request()->routeIs('customer.*') ? 'active' : '' }}">
+  <i class="nav-icon bi bi-people"></i>
+            <p>
+              Customer
+              <i class="nav-arrow bi bi-chevron-right"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="{{ route('customer.create') }}"
+                class="nav-link {{ request()->routeIs('customer.create') ? 'active' : '' }}">
+                <i class="nav-icon bi bi-circle"></i>
+                <p>Add Customer</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ route('customer.index') }}"
+                class="nav-link {{ request()->routeIs('customer.index') ? 'active' : '' }}">
+                <i class="nav-icon bi bi-circle"></i>
+                <p>List Customer</p>
+              </a>
+            </li>
+
+          </ul>
+        </li>
+
+
       </ul>
       <!--end::Sidebar Menu-->
     </nav>

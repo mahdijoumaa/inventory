@@ -8,13 +8,13 @@
                 <div class="row mb-2">
                     <div class="col-sm-6">
                         <h1 class="m-0 font-weight-bold">
-                            <i class="fas fa-truck text-primary mr-2"></i> Suppliers
+                            <i class="fas fa-truck text-primary mr-2"></i> customers
                         </h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active">Suppliers</li>
+                            <li class="breadcrumb-item active">customers</li>
                         </ol>
                     </div>
                 </div>
@@ -35,13 +35,13 @@
                             <div class="inner">
                                 {{-- Centered Title for this KPI box --}}
                                 <div class="icon"><i class="fas fa-users"></i></div>
-                                <h6 class="fw-bold text-uppercase mb-2 text-center">Total Suppliers KPI</h6>
+                                <h6 class="fw-bold text-uppercase mb-2 text-center">Total customers KPI</h6>
 
-                                <h3 class="text-center">{{ $suppliers->count() }}</h3>
-                                <p class="text-center">Total Suppliers</p>
+                                <h3 class="text-center">{{ $customers->count() }}</h3>
+                                <p class="text-center">Total customers</p>
                             </div>
                             <div class="icon"><i class="fas fa-users"></i></div>
-                            <a href="{{ route('supplier.create') }}"
+                            <a href="{{ route('customer.create') }}"
                                 class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
                                 Add New <i class="bi bi-link-45deg"></i>
                             </a>
@@ -53,11 +53,11 @@
                 <div class="card card-outline card-primary shadow-sm">
                     <div class="card-header d-flex align-items-center py-3">
                         <h3 class="card-title mb-0">
-                            <i class="fas fa-list mr-1"></i> Suppliers List
+                            <i class="fas fa-list mr-1"></i> customers List
                         </h3>
                         <div class="ml-auto">
-                            <a href="{{ route('supplier.create') }}" class="btn btn-primary btn-sm px-3">
-                                <i class="fas fa-plus-circle mr-1"></i> Add Supplier
+                            <a href="{{ route('customer.create') }}" class="btn btn-primary btn-sm px-3">
+                                <i class="fas fa-plus-circle mr-1"></i> Add customer
                             </a>
                         </div>
                     </div>
@@ -75,38 +75,38 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse ($suppliers as $index => $supplier)
+                                    @forelse ($customers as $index => $customer)
                                         <tr>
                                             <td>
                                                 <span class="badge badge-secondary">{{ $index + 1 }}</span>
                                             </td>
                                             <td>
-                                                @if ($supplier->supp_image)
-                                                    <img src="{{ asset('upload/' . $supplier->supp_image) }}"
-                                                        alt="{{ $supplier->supp_name }}"
-                                                        class="img-circle elevation-1 supplier-avatar" width="42" height="42"
+                                                @if ($customer->cust_image)
+                                                    <img src="{{ asset('upload/' . $customer->cust_image) }}"
+                                                        alt="{{ $customer->cust_name }}"
+                                                        class="img-circle elevation-1 customer-avatar" width="42" height="42"
                                                         style="cursor:pointer; object-fit:cover;" data-bs-toggle="modal"
                                                         data-bs-target="#imageModal"
-                                                        data-img="{{ asset('upload/' . $supplier->supp_image) }}"
-                                                        data-name="{{ $supplier->supp_name }}">
+                                                        data-img="{{ asset('upload/' . $customer->cust_image) }}"
+                                                        data-name="{{ $customer->cust_name }}">
                                                 @else
                                                     <span
                                                         class="img-circle elevation-1 d-inline-flex align-items-center justify-content-center bg-gradient-secondary text-white"
                                                         style="width:42px;height:42px;font-size:16px;font-weight:700;border-radius:50%;">
-                                                        {{ strtoupper(substr($supplier->supp_name, 0, 1)) }}
+                                                        {{ strtoupper(substr($customer->cust_name, 0, 1)) }}
                                                     </span>
                                                 @endif
                                             </td>
                                             <td class="align-middle">
-                                                <strong>{{ $supplier->supp_name }}</strong>
+                                                <strong>{{ $customer->cust_name }}</strong>
                                             </td>
                                             <td class="align-middle text-muted">
                                                 <i class="fas fa-envelope mr-1 text-secondary" style="font-size:11px;"></i>
-                                                {{ $supplier->supp_email }}
+                                                {{ $customer->cust_email }}
                                             </td>
                                             <td class="align-middle text-center">
-                                                <a href="{{ route('supplier.edit', $supplier->id) }}"
-                                                    class="btn btn-warning btn-xs px-2 mr-1" title="Edit Supplier">
+                                                <a href="{{ route('customer.edit', $customer->id) }}"
+                                                    class="btn btn-warning btn-xs px-2 mr-1" title="Edit customer">
                                                     <i class="fas fa-edit mr-1"></i> Edit
                                                 </a>
 
@@ -119,14 +119,14 @@
                                                         </button>-->
 
                                                 <!--    <button type="submit" class="btn btn-danger btn-xs px-2"
-                                                                        title="Delete Supplier">
+                                                                        title="Delete customer">
                                                                         <i class="fas fa-trash mr-1"></i> Delete
                                                                     </button>  -->
 
                                                 <!-- Button trigger modal -->
                                                 <button type="button" class="btn btn-danger delete" data-bs-toggle="modal"
-                                                    data-bs-target="#exampleModal" data-id="{{ $supplier->id }}"
-                                                    data-url="{{ route('supplier.destroy', $supplier->id) }}">
+                                                    data-bs-target="#exampleModal" data-id="{{ $customer->id }}"
+                                                    data-url="{{ route('customer.destroy', $customer->id) }}">
                                                     Delete
                                                 </button>
 
@@ -138,7 +138,7 @@
                                         <tr>
                                             <td colspan="5" class="text-center py-5 text-muted">
                                                 <i class="fas fa-box-open fa-3x mb-3 d-block"></i>
-                                                No suppliers found. <a href="{{ route('supplier.create') }}">Add one now.</a>
+                                                No customers found. <a href="{{ route('customer.create') }}">Add one now.</a>
                                             </td>
                                         </tr>
                                     @endforelse
@@ -148,7 +148,7 @@
                     </div>
 
                     <div class="card-footer text-muted text-sm">
-                        Showing {{ $suppliers->count() }} supplier(s)
+                        Showing {{ $customers->count() }} customer(s)
                     </div>
                 </div>
 
@@ -162,7 +162,7 @@
             <div class="modal-content shadow-lg">
                 <div class="modal-header bg-primary text-white py-2">
                     <h6 class="modal-title mb-0" id="imageModalLabel">
-                        <i class="fas fa-image mr-1"></i> <span id="modalSupplierName"></span>
+                        <i class="fas fa-image mr-1"></i> <span id="modalcustomerName"></span>
                     </h6>
 
 
@@ -184,7 +184,6 @@
 
 
     <!-- Modal -->
-     
     <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered"> <!-- Added modal-dialog-centered -->
@@ -212,15 +211,16 @@
 
 @section('scripts')
     <script>
-      document.addEventListener("DOMContentLoaded", function () {
+   document.addEventListener("DOMContentLoaded", function () {
     const table = document.getElementById('myTable');
     const tbodyRows = table.querySelectorAll('tbody tr');
 
-    // Check if there is at least one row that is not an empty-message row
-    const hasData = Array.from(tbodyRows).some(row => !row.querySelector('td[colspan]'));
+    // Check if there is at least one row that is not the empty-message row
+    const hasData = Array.from(tbodyRows).some(row => 
+        !row.querySelector('td[colspan]')
+    );
 
     if (hasData) {
-        // Initialize DataTable only if table has real data
         new DataTable('#myTable', {
             paging: true,
             searching: true,
@@ -228,17 +228,18 @@
             scrollX: true,
             language: {
                 search: '<i class="fas fa-search"></i>',
-                searchPlaceholder: 'Search suppliers...',
-                lengthMenu: 'Show _MENU_ suppliers',
-                info: 'Showing _START_ to _END_ of _TOTAL_ suppliers',
-                emptyTable: 'No suppliers found',
+                searchPlaceholder: 'Search customers...',
+                lengthMenu: 'Show _MENU_ customers',
+                info: 'Showing _START_ to _END_ of _TOTAL_ customers',
+                emptyTable: 'No customers found',
             },
             columnDefs: [
-                { orderable: false, targets: [1, 4] } // Disable sort on Avatar & Actions
+                { orderable: false, targets: [1, 4] } // Avatar & Actions not sortable
             ]
         });
     }
 });
+
 
             // Image Modal
             const imageModal = document.getElementById('imageModal');
@@ -249,9 +250,9 @@
 
                 document.getElementById('previewImage').src = src;
                 document.getElementById('previewImage').alt = name;
-                document.getElementById('modalSupplierName').textContent = name;
+                document.getElementById('modalcustomerName').textContent = name;
                 document.getElementById('downloadImage').href = src;
-                document.getElementById('downloadImage').download = name.replace(/\s+/g, '_');
+                document.getElementById('downloadImage').download = id.replace(/\s+/g, '_');
 
 
 
@@ -259,7 +260,7 @@
 
             });
 
-          /*   SweetAlert2 delete confirmation (if installed, else native confirm)
+            /*SweetAlert2 delete confirmation (if installed, else native confirm)
             document.querySelectorAll('.delete-form').forEach(form => {
                 form.addEventListener('submit', function (e) {
                     e.preventDefault();
@@ -267,7 +268,7 @@
 
                     if (typeof Swal !== 'undefined') {
                         Swal.fire({
-                            title: 'Delete Supplier?',
+                            title: 'Delete customer?',
                             text: 'This action cannot be undone.',
                             icon: 'warning',
                             showCancelButton: true,
@@ -277,13 +278,13 @@
                             cancelButtonText: 'Cancel'
                         }).then(result => { if (result.isConfirmed) submit(); });
                     } else {
-                        if (confirm('Are you sure you want to delete this supplier?')) submit();
+                        if (confirm('Are you sure you want to delete this customer?')) submit();
                     }
                 });
-            }); 
+            });
 
         });
- */
+*/
 
 
     

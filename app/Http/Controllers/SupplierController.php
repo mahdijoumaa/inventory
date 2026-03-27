@@ -35,6 +35,8 @@ class SupplierController extends Controller
         return view('supplier.index', compact('suppliers', 'perPage'));
         */
     // 1. Fetch all suppliers, optionally you can paginate
+
+  //  $page_title = "";
     $suppliers = Supplier::orderBy('id', 'asc')->get();
 
     // 2. Pass suppliers to the Blade view
@@ -210,18 +212,23 @@ return redirect()->route('supplier.index')
      */
     public function destroy(string $id)
     {
-        //
-        // Find the supplier by ID
-        $supplier = Supplier::find($id);
+         // Find supplier
+    $supplier = Supplier::findOrFail($id);
 
-        if (!$supplier) {
-            return redirect()->route('supplier.index')->with('error', 'Supplier not found.');
-        }
+    // Path to images folder
+    $path = public_path('upload');
 
-        // Delete the supplier
-        $supplier->delete();
+    // 🔥 Delete old image (if not default)
+    if ($supplier->supp_image != 'no_image.png' &&
+        file_exists($path . '/' . $supplier->supp_image)) {
 
-        // Redirect back with success message
-        return redirect()->route('supplier.index')->with('success', 'Supplier deleted successfully.');
+        unlink($path . '/' . $supplier->supp_image);
+    }
+
+    // Now delete supplier
+    $supplier->delete();
+
+    return redirect()->route('supplier.index')
+                     ->with('success', 'Supplier deleted successfully.');
     }
 }
