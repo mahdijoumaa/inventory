@@ -5,7 +5,8 @@
     <!--begin::Brand Link-->
     <a href="#" class="brand-link">
       <!--begin::Brand Image-->
-      <img src="./assets/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image opacity-75 shadow" />
+
+      <img src="{{ asset('assets/img/AdminLTELogo.png') }}" alt="AdminLTE Logo" class="brand-image opacity-75 shadow" />
       <!--end::Brand Image-->
       <!--begin::Brand Text-->
       <span class="brand-text fw-light">Sphere 4</span>
@@ -26,7 +27,7 @@
             <p>Dashboard</p>
           </a>
         </li>
-
+ <!--start::supplier Menu-->
         <li class="nav-item {{ request()->routeIs('supplier.*') ? 'menu-open' : '' }}">
           <a href="#" class="nav-link {{ request()->routeIs('supplier.*') ? 'active' : '' }}">
             <i class="nav-icon bi bi-truck"></i>
@@ -54,8 +55,9 @@
           </ul>
         </li>
 
+ <!--end::supplier Menu-->
 
-
+  <!--start::Customer Menu-->
          <li class="nav-item {{ request()->routeIs('customer.*') ? 'menu-open' : '' }}">
           <a href="#" class="nav-link {{ request()->routeIs('customer.*') ? 'active' : '' }}">
   <i class="nav-icon bi bi-people"></i>
@@ -83,6 +85,40 @@
           </ul>
         </li>
 
+ <!--end::custonmer Menu--> 
+ 
+ 
+
+   <!--start::category Menu-->
+                 <li class="nav-item {{ request()->routeIs('categories.*') ? 'menu-open' : '' }}">
+          <a href="#" class="nav-link {{ request()->routeIs('categories.*') ? 'active' : '' }}">
+  <i class="nav-icon bi bi-diagram-3  "></i>
+            <p>
+              Categories
+              <i class="nav-arrow bi bi-chevron-right"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="{{ route('categories.create') }}"
+                class="nav-link {{ request()->routeIs('categories.create') ? 'active' : '' }}">
+                <i class="nav-icon bi bi-circle"></i>
+                <p>Add category</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ route('categories.index') }}"
+                class="nav-link {{ request()->routeIs('categories.index') ? 'active' : '' }}">
+                <i class="nav-icon bi bi-circle"></i>
+                <p>List category</p>
+              </a>
+            </li>
+
+          </ul>
+        </li>
+
+        
+ <!--end::category Menu--> 
 
       </ul>
       <!--end::Sidebar Menu-->
