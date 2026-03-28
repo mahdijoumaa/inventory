@@ -120,6 +120,39 @@
         
  <!--end::category Menu--> 
 
+
+  <!--start::Product Menu-->
+                 <li class="nav-item {{ request()->routeIs('products.*') ? 'menu-open' : '' }}">
+          <a href="#" class="nav-link {{ request()->routeIs('products.*') ? 'active' : '' }}">
+<i class="nav-icon bi bi-box-seam"></i>
+            <p>
+              Products
+              <i class="nav-arrow bi bi-chevron-right"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="{{ route('products.create') }}"
+                class="nav-link {{ request()->routeIs('products.create') ? 'active' : '' }}">
+                <i class="nav-icon bi bi-circle"></i>
+                <p>Add Product</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ route('products.index') }}"
+                class="nav-link {{ request()->routeIs('products.index') ? 'active' : '' }}">
+                <i class="nav-icon bi bi-circle"></i>
+                <p>List Product</p>
+              </a>
+            </li>
+
+          </ul>
+        </li>
+
+        
+ <!--end::Product Menu--> 
+
+
       </ul>
       <!--end::Sidebar Menu-->
     </nav>
