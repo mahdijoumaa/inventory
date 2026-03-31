@@ -11,6 +11,7 @@
             @csrf
             @method('PUT')
 
+            {{-- Global Errors --}}
             @if ($errors->any())
                 <div class="alert alert-danger mx-3 mt-3">
                     <ul class="mb-0">
@@ -22,69 +23,152 @@
             @endif
 
             <div class="card-body">
-                <!-- Product Name -->
-                <div class="mb-3">
-                    <label class="form-label">Product Name</label>
-                    <input type="text" name="product_name" value="{{ old('product_name', $product->product_name) }}"
-                        class="form-control @error('product_name') is-invalid @enderror">
-                    @error('product_name') <div class="invalid-feedback">{{ $message }}</div> @enderror
+
+                {{-- BASIC INFO --}}
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Product Name</label>
+                        <input type="text" name="product_name" value="{{ old('product_name', $product->product_name) }}"
+                            class="form-control @error('product_name') is-invalid @enderror">
+                        @error('product_name') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Product Code</label>
+                        <input type="text" name="product_code" value="{{ old('product_code', $product->product_code) }}"
+                            class="form-control @error('product_code') is-invalid @enderror">
+                        @error('product_code') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    </div>
                 </div>
 
-                <!-- Product Code -->
-                <div class="mb-3">
-                    <label class="form-label">Product Code</label>
-                    <input type="text" name="product_code" value="{{ old('product_code', $product->product_code) }}"
-                        class="form-control @error('product_code') is-invalid @enderror">
-                    @error('product_code') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                {{-- CATEGORY + SUPPLIER --}}
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Category</label>
+                        <select name="cat_id" class="form-select select2 @error('cat_id') is-invalid @enderror">
+                            <option value="">-- Select Category --</option>
+                            @foreach ($categories as $category)
+                                <option value="{{ $category->id }}" {{ old('cat_id', $product->cat_id) == $category->id ? 'selected' : '' }}>
+                                    {{ $category->cat_name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('cat_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Supplier</label>
+                        <select name="supp_id" class="form-select select2 @error('supp_id') is-invalid @enderror">
+                            <option value="">-- Select Supplier --</option>
+                            @foreach ($suppliers as $supplier)
+                                <option value="{{ $supplier->id }}" {{ old('supp_id', $product->supp_id) == $supplier->id ? 'selected' : '' }}>
+                                    {{ $supplier->supp_name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('supp_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    </div>
                 </div>
 
-                <!-- Category -->
-                <div class="mb-3">
-                    <label class="form-label">Category</label>
-                    <select name="cat_id" class="form-select select2 @error('cat_id') is-invalid @enderror">
-                        <option value="">-- Select Category --</option>
-                        @foreach ($categories as $category)
-                            <option value="{{ $category->id }}" {{ old('cat_id', $product->cat_id) == $category->id ? 'selected' : '' }}>
-                                {{ $category->cat_name }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('cat_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                {{-- BRAND + UNIT --}}
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Brand</label>
+                        <input type="text" name="brand" value="{{ old('brand', $product->brand) }}" class="form-control">
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Unit</label>
+                        <select name="unit" class="form-select">
+                            <option value="pcs" {{ old('unit', $product->unit) == 'pcs' ? 'selected' : '' }}>Pieces</option>
+                            <option value="kg" {{ old('unit', $product->unit) == 'kg' ? 'selected' : '' }}>Kilogram</option>
+                            <option value="box" {{ old('unit', $product->unit) == 'box' ? 'selected' : '' }}>Box</option>
+                            <option value="liter" {{ old('unit', $product->unit) == 'liter' ? 'selected' : '' }}>Liter</option>
+                        </select>
+                    </div>
                 </div>
 
-                <!-- Supplier -->
-                <div class="mb-3">
-                    <label class="form-label">Supplier</label>
-                    <select name="supp_id" class="form-select select2 @error('supp_id') is-invalid @enderror">
-                        <option value="">-- Select Supplier --</option>
-                        @foreach ($suppliers as $supplier)
-                            <option value="{{ $supplier->id }}" {{ old('supp_id', $product->supp_id) == $supplier->id ? 'selected' : '' }}>
-                                {{ $supplier->supp_name }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('supp_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                {{-- PRICING --}}
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Cost Price</label>
+                        <input type="number" step="0.01" name="cost_price" value="{{ old('cost_price', $product->cost_price) }}" class="form-control">
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Sell Price</label>
+                        <input type="number" step="0.01" name="sell_price" value="{{ old('sell_price', $product->sell_price) }}" class="form-control">
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">VAT (%)</label>
+                        <input type="number" step="0.01" name="vat" value="{{ old('vat', $product->vat ?? 0) }}" class="form-control">
+                    </div>
                 </div>
 
-                <!-- Brand -->
-                <div class="mb-3">
-                    <label class="form-label">Brand</label>
-                    <input type="text" name="brand" value="{{ old('brand', $product->brand) }}"
-                        class="form-control @error('brand') is-invalid @enderror">
-                    @error('brand') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                {{-- BARCODE + LOCATION --}}
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Barcode</label>
+                        <input type="text" name="barcode" value="{{ old('barcode', $product->barcode) }}" class="form-control">
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Location</label>
+                        <input type="text" name="location" value="{{ old('location', $product->location) }}" class="form-control">
+                    </div>
                 </div>
 
-                <!-- Product Image -->
+                {{-- STOCK --}}
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Min Stock</label>
+                        <input type="number" name="min_stock" value="{{ old('min_stock', $product->min_stock) }}" class="form-control">
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Max Stock</label>
+                        <input type="number" name="max_stock" value="{{ old('max_stock', $product->max_stock) }}" class="form-control">
+                    </div>
+                </div>
+
+                {{-- EXPIRY + STATUS --}}
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Expiry Date</label>
+                        <input type="date" name="expiry_date" value="{{ old('expiry_date', $product->expiry_date?->format('Y-m-d')) }}" class="form-control">
+                    </div>
+
+                    <div class="col-md-6 mb-3 d-flex align-items-center">
+                        <div class="form-check mt-4">
+                            <input class="form-check-input" type="checkbox" name="is_active" value="1"
+                                {{ old('is_active', $product->is_active) ? 'checked' : '' }}>
+                            <label class="form-check-label">Active Product</label>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- DESCRIPTION --}}
+                <div class="mb-3">
+                    <label class="form-label">Description</label>
+                    <textarea name="description" class="form-control" rows="2">{{ old('description', $product->description) }}</textarea>
+                </div>
+
+                {{-- IMAGE --}}
                 <div class="mb-3">
                     <label class="form-label">Upload Image</label>
-                    <input type="file" name="product_image" class="dropify @error('product_image') is-invalid @enderror"
-                        accept="image/*" data-default-file="{{ asset('upload/' . $product->product_image) }}">
-                    @error('product_image') <div class="text-danger mt-1">{{ $message }}</div> @enderror
+                    <input type="file" name="product_image"
+                        class="dropify"
+                        accept="image/*"
+                        data-default-file="{{ $product->product_image ? asset('upload/' . $product->product_image) : '' }}"
+                        data-max-file-size="2M"
+                        data-allowed-file-extensions="jpg jpeg png">
                 </div>
+
             </div>
 
             <div class="card-footer d-flex justify-content-end gap-2">
-                <a href="{{ route('products.index') }}" class="btn btn-secondary">Cancel</a>
+                <a href="{{ url()->previous() }}" class="btn btn-secondary">Cancel</a>
                 <button type="submit" class="btn btn-primary">Update Product</button>
             </div>
         </form>
@@ -94,7 +178,10 @@
 
 @section('scripts')
 <script>
+    // Dropify
     $('.dropify').dropify();
+
+    // Select2
     $('.select2').select2({
         placeholder: 'Select an option',
         allowClear: true,

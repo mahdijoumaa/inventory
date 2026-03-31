@@ -62,6 +62,10 @@
 
     <!--DataTables 2.3.7 is the current stable release of DataTables. -->
 <link rel="stylesheet" href="https://cdn.datatables.net/2.3.7/css/dataTables.bootstrap5.min.css">
+
+<!-- purchase-->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
     
 </head>
 <!--end::Head-->
@@ -565,6 +569,9 @@
     <!--DataTables 2.3.7 is the current stable release of DataTables. -->
     <script src="https://cdn.datatables.net/2.3.7/js/dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/2.3.7/js/dataTables.bootstrap5.min.js"></script>
+    
+    <!--purchase -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 @yield('scripts')
   

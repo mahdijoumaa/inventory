@@ -7,15 +7,36 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model
 {
     //
-     protected $fillable = [
-        'product_code',
-        'product_name',
-        'product_image',
-        'cat_id',
-        'supp_id',
-        'brand',
-    ];
+    protected $fillable = [
+    'product_code',
+    'product_name',
+    'product_image',
+    'cat_id',
+    'supp_id',
+    'brand',
 
+    // New fields
+    'unit',
+    'cost_price',
+    'sell_price',
+    'vat',
+    'min_stock',
+    'max_stock',
+    'is_active',
+    'description',
+    'barcode',
+    'location',
+      'expiry_date',
+
+];
+
+protected $casts = [
+    'cost_price' => 'decimal:2',
+    'sell_price' => 'decimal:2',
+    'vat' => 'decimal:2',
+    'is_active' => 'boolean',
+    'expiry_date' => 'date', // ✅ added
+];
       // Category relationship
     public function category()
     {

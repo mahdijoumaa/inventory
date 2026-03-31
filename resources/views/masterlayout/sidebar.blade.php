@@ -152,6 +152,69 @@
         
  <!--end::Product Menu--> 
 
+  <!--start::unit Menu-->
+                 <li class="nav-item {{ request()->routeIs('unit.*') ? 'menu-open' : '' }}">
+          <a href="#" class="nav-link {{ request()->routeIs('unit.*') ? 'active' : '' }}">
+<i class="nav-icon bi bi-box-seam"></i>
+            <p>
+              Units
+              <i class="nav-arrow bi bi-chevron-right"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="{{ route('unit.create') }}"
+                class="nav-link {{ request()->routeIs('unit.create') ? 'active' : '' }}">
+                <i class="nav-icon bi bi-circle"></i>
+                <p>Add Units</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ route('unit.index') }}"
+                class="nav-link {{ request()->routeIs('unit.index') ? 'active' : '' }}">
+                <i class="nav-icon bi bi-circle"></i>
+                <p>List Units</p>
+              </a>
+            </li>
+
+          </ul>
+        </li>
+
+        
+ <!--end::unit Menu--> 
+
+
+  <!--start::unit Menu-->
+                 <li class="nav-item {{ request()->routeIs('purchase.*') ? 'menu-open' : '' }}">
+          <a href="#" class="nav-link {{ request()->routeIs('purchase.*') ? 'active' : '' }}">
+<i class="nav-icon bi bi-box-seam"></i>
+            <p>
+              Purchase
+              <i class="nav-arrow bi bi-chevron-right"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="{{ route('purchase.create') }}"
+                class="nav-link {{ request()->routeIs('purchase.create') ? 'active' : '' }}">
+                <i class="nav-icon bi bi-circle"></i>
+                <p>Add Purchase</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ route('purchase.index') }}"
+                class="nav-link {{ request()->routeIs('purchase.index') ? 'active' : '' }}">
+                <i class="nav-icon bi bi-circle"></i>
+                <p>List Purchase</p>
+              </a>
+            </li>
+
+          </ul>
+        </li>
+
+        
+ <!--end::unit Menu--> 
+
 
       </ul>
       <!--end::Sidebar Menu-->
