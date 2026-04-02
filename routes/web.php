@@ -37,7 +37,8 @@ Route::middleware('auth')->group(function () {
 
               //Route:Purchase
     Route::resource('purchase', PurchaseController::class,['names'=> 'purchase']);
-
+         //Route:Purchase
+    Route::get('/get-products', [PurchaseController::class, 'getProducts']);
 
     
 });
