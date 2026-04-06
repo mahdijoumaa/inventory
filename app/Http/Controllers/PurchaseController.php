@@ -30,79 +30,31 @@ class PurchaseController extends Controller
      */
     public function create()
     {
-        //
+      
+        $purchase_no=$this->uniqueNumber();
+        $pade_title = '';
+        //  $suppliers = Supplier::where('status',1)->get();
         $suppliers = Supplier::all();
-        $categories  = Category::all();
-        $units=Unit::all();
-
-          $products=Product::all();
-          $page_title = "Purchase";
+        $categories = Category::all();
+        $units = Unit::all();
+        $products = Product::all();
 
 
-        return view('purchase.create',compact('suppliers','categories','units','products'));
 
-
+    
+        return view('purchase.create',compact('purchase_no','pade_title','suppliers','categories','units','products'));
 
     }
-     // AJAX
-    public function getProducts(Request $request)
-    {
-        return Product::where('id', $request->cat_id)
-            ->where('id', $request->supplier_id)
-            ->get();
-    }
+   
+    
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        //
-
-             $request->validate([
-            'supplier_id' => 'required',
-            'product_id.*' => 'required',
-            'qty.*' => 'required|numeric|min:1',
-            'unit_price.*' => 'required|numeric|min:0',
-        ]);
-
-        DB::beginTransaction();
-
-        try {
-
-            // Create Purchase
-            $purchase = Purchase::create([
-                'purchase_no'  => 'PUR-' . time(),
-                'supplier_id'  => $request->supplier_id,
-                'total_amount' => $request->total_amount,
-                'paid_amount'  => $request->paid_amount ?? 0,
-                'due_amount'   => $request->due_amount ?? 0,
-            ]);
-
-            // Loop items
-            foreach ($request->product_id as $key => $product_id) {
-
-                PurchaseMeta::create([
-                    'purchase_id' => $purchase->id,
-                    'product_id'  => $product_id,
-                    'unit_id'     => $request->unit_id[$key],
-                    'qty'         => $request->qty[$key],
-                    'unit_price'  => $request->unit_price[$key],
-                ]);
-
-                // OPTIONAL: update stock
-                // Product::where('id', $product_id)->increment('stock', $request->qty[$key]);
-            }
-
-            DB::commit();
-
-            return redirect()->route('purchases.index')
-                ->with('success', 'Purchase saved successfully ✅');
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->with('error', $e->getMessage());
-        }
+       
+    
     }
     
 
@@ -137,4 +89,49 @@ class PurchaseController extends Controller
     {
         //
     }
+
+/*
+    public function uniqueNumber()
+
+    {
+        $purchase =Purchase::latest()->first();
+
+        if($purchase->count()> 1)
+            {
+                $name=  $purchase->purchase_no;
+                $number=explode('_',$name);
+                  $purchase_no= 'ps_'+ ((int)$number[1]+1);
+
+            }
+            else
+                {
+               $purchase_no = 'ps_0001';
+
+                }
+
+                return $purchase_no;
+
+
+    }
+                */
+
+
+public function uniqueNumber()
+{
+    $purchase = Purchase::latest()->first();
+
+    if ($purchase) {
+        $name = $purchase->purchase_no;
+        $number = explode('_', $name);
+
+        $next = ((int)($number[1] ?? 0)) + 1;
+
+        $purchase_no = 'PS_' . str_pad($next, 4, '0', STR_PAD_LEFT);
+    } else {
+        $purchase_no = 'PS_0001';
+    }
+
+    return $purchase_no;
+}
+
 }
