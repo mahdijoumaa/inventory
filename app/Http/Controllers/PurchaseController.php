@@ -299,5 +299,19 @@ public function downloadPdf($id)
     return $pdf->download('purchase_' . $purchase->purchase_no . '.pdf');
 }
 
+public function pos()
+{
+    $suppliers = Supplier::all();
+    $categories = Category::all();
+    $products = Product::all();
+    $purchase_no = $this->uniqueNumber();
+
+    return view('purchase.pos', compact(
+        'suppliers',
+        'categories',
+        'products',
+        'purchase_no'
+    ));
+}
 
 }

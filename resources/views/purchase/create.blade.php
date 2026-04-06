@@ -85,7 +85,7 @@
                                         <option value="">Select category</option>
                                         @foreach ($categories as $category)
                                             <option value="{{ $category->id }}">
-                                                {{ $category->cat_name }}
+                                                {{ $category->id }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -142,6 +142,7 @@
 
             <!-- Footer -->
             <div class="card-footer d-flex justify-content-end gap-2">
+                
                 <a href="#" class="btn btn-secondary">Cancel</a>
                 <button type="submit" class="btn btn-primary">Save Purchase</button>
             </div>
@@ -152,16 +153,23 @@
 
 @endsection
 
+
+
 @section('scripts')
 
 <script>
     let count = 2;
+    let isRestoringDraft = false;
+    let formChanged = false;
+    const draftKey = 'purchase_form_draft';
 
-    function cloneRow() {
+    function cloneRow(rowData = null) {
+        const rowNumber = count;
+
         const tr = `
             <tr class="tr">
                 <td>
-                    <select name="cat_id[]" class="form-control" id="cat_${count}" onchange="loadProducts(this)">
+                    <select name="cat_id[]" class="form-control" id="cat_${rowNumber}" onchange="loadProducts(this)">
                         <option value="">Select category</option>
                         @foreach ($categories as $category)
                             <option value="{{ $category->id }}">
@@ -172,13 +180,13 @@
                 </td>
 
                 <td>
-                    <select name="product_id[]" class="form-control" id="product_${count}">
+                    <select name="product_id[]" class="form-control" id="product_${rowNumber}">
                         <option value="">Select Product</option>
                     </select>
                 </td>
 
                 <td>
-                    <select name="unit[]" class="form-control" id="unit_${count}">
+                    <select name="unit[]" class="form-control" id="unit_${rowNumber}">
                         <option value="">Select Unit</option>
                         @foreach ($units as $unit)
                             <option value="{{ $unit->id }}">
@@ -189,15 +197,15 @@
                 </td>
 
                 <td>
-                    <input type="number" name="quantity[]" id="quantity_${count}" class="form-control" min="1" value="1" oninput="calc_total(this)">
+                    <input type="number" name="quantity[]" id="quantity_${rowNumber}" class="form-control" min="1" value="1" oninput="calc_total(this)">
                 </td>
 
                 <td>
-                    <input type="number" name="price[]" id="price_${count}" class="form-control" step="0.01" min="0" oninput="calc_total(this)">
+                    <input type="number" name="price[]" id="price_${rowNumber}" class="form-control" step="0.01" min="0" oninput="calc_total(this)">
                 </td>
 
                 <td>
-                    <input type="number" name="line_total[]" class="form-control" step="0.01" min="0" readonly id="total_${count}">
+                    <input type="number" name="line_total[]" class="form-control" step="0.01" min="0" readonly id="total_${rowNumber}">
                 </td>
 
                 <td class="text-center">
@@ -207,6 +215,20 @@
         `;
 
         $('#purchaseTable tbody').append(tr);
+
+        if (rowData) {
+            $('#cat_' + rowNumber).val(rowData.cat_id || '');
+            $('#unit_' + rowNumber).val(rowData.unit || '');
+            $('#quantity_' + rowNumber).val(rowData.quantity || 1);
+            $('#price_' + rowNumber).val(rowData.price || 0);
+
+            if (rowData.cat_id) {
+                loadProducts($('#cat_' + rowNumber)[0], rowData.product_id);
+            }
+
+            calc_total($('#price_' + rowNumber)[0]);
+        }
+
         count++;
     }
 
@@ -217,12 +239,13 @@
         if (table.find('tr').length > 1) {
             row.remove();
             calculateGrandTotal();
+            savePurchaseDraft();
         } else {
             alert('At least one row is required');
         }
     }
 
-    function loadProducts(catSelect) {
+    function loadProducts(catSelect, selectedProductId = null) {
         const catId = $(catSelect).val();
         const rowId = $(catSelect).attr('id').split('_')[1];
         const productSelect = $('#product_' + rowId);
@@ -231,6 +254,7 @@
 
         if (!catId) {
             productSelect.html('<option value="">Select Product</option>');
+            savePurchaseDraft();
             return;
         }
 
@@ -245,6 +269,12 @@
                 });
 
                 productSelect.html(options);
+
+                if (selectedProductId) {
+                    productSelect.val(selectedProductId);
+                }
+
+                savePurchaseDraft();
             },
             error: function() {
                 productSelect.html('<option value="">No products found</option>');
@@ -258,12 +288,12 @@
 
         const quantity = parseFloat($('#quantity_' + num).val()) || 0;
         const price = parseFloat($('#price_' + num).val()) || 0;
-
         const total = quantity * price;
 
         $('#total_' + num).val(total.toFixed(2));
 
         calculateGrandTotal();
+        savePurchaseDraft();
     }
 
     function calculateGrandTotal() {
@@ -275,6 +305,163 @@
 
         $('#grand_total').val(grand.toFixed(2));
     }
+
+    function getPurchaseDraftData() {
+        let rows = [];
+
+        $('#purchaseTable tbody tr').each(function () {
+            const row = $(this);
+            rows.push({
+                cat_id: row.find('select[name="cat_id[]"]').val(),
+                product_id: row.find('select[name="product_id[]"]').val(),
+                unit: row.find('select[name="unit[]"]').val(),
+                quantity: row.find('input[name="quantity[]"]').val(),
+                price: row.find('input[name="price[]"]').val(),
+                line_total: row.find('input[name="line_total[]"]').val()
+            });
+        });
+
+        return {
+            purchase_id: $('#purchase_id').val(),
+            supp_id: $('#supp_id').val(),
+            paid_amount: $('#paid_amount').val(),
+            total: $('#grand_total').val(),
+            rows: rows
+        };
+    }
+
+    function savePurchaseDraft() {
+        if (isRestoringDraft) return;
+
+        const data = getPurchaseDraftData();
+        localStorage.setItem(draftKey, JSON.stringify(data));
+        formChanged = true;
+    }
+
+    function restorePurchaseDraft() {
+        const saved = localStorage.getItem(draftKey);
+
+        if (!saved) return;
+
+        const draft = JSON.parse(saved);
+
+        if (!draft || !draft.rows || draft.rows.length === 0) return;
+
+        if (!confirm('A saved draft was found. Do you want to restore it?')) {
+            return;
+        }
+
+        isRestoringDraft = true;
+
+        $('#supp_id').val(draft.supp_id || '');
+        $('#paid_amount').val(draft.paid_amount || '');
+
+        $('#purchaseTable tbody').html('');
+        count = 1;
+
+        draft.rows.forEach(function (row) {
+            if (count === 1) {
+                const firstRow = `
+                    <tr class="tr">
+                        <td>
+                            <select name="cat_id[]" class="form-control" id="cat_1" onchange="loadProducts(this)">
+                                <option value="">Select category</option>
+                                @foreach ($categories as $category)
+                                    <option value="{{ $category->id }}">
+                                        {{ $category->cat_name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </td>
+
+                        <td>
+                            <select name="product_id[]" class="form-control" id="product_1">
+                                <option value="">Select Product</option>
+                            </select>
+                        </td>
+
+                        <td>
+                            <select name="unit[]" class="form-control" id="unit_1">
+                                <option value="">Select Unit</option>
+                                @foreach ($units as $unit)
+                                    <option value="{{ $unit->id }}">
+                                        {{ $unit->unit_name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </td>
+
+                        <td>
+                            <input type="number" name="quantity[]" id="quantity_1" class="form-control" min="1" value="1" oninput="calc_total(this)">
+                        </td>
+
+                        <td>
+                            <input type="number" name="price[]" id="price_1" class="form-control" step="0.01" min="0" oninput="calc_total(this)">
+                        </td>
+
+                        <td>
+                            <input type="number" name="line_total[]" class="form-control" step="0.01" min="0" readonly id="total_1">
+                        </td>
+
+                        <td class="text-center">
+                            <button type="button" onclick="removeRow(this)" class="btn btn-danger btn-sm">X</button>
+                        </td>
+                    </tr>
+                `;
+                $('#purchaseTable tbody').append(firstRow);
+
+                $('#cat_1').val(row.cat_id || '');
+                $('#unit_1').val(row.unit || '');
+                $('#quantity_1').val(row.quantity || 1);
+                $('#price_1').val(row.price || 0);
+
+                if (row.cat_id) {
+                    loadProducts($('#cat_1')[0], row.product_id);
+                }
+
+                calc_total($('#price_1')[0]);
+                count = 2;
+            } else {
+                cloneRow(row);
+            }
+        });
+
+        calculateGrandTotal();
+        isRestoringDraft = false;
+    }
+
+    function clearPurchaseDraft() {
+        if (confirm('Are you sure you want to clear the saved draft?')) {
+            localStorage.removeItem(draftKey);
+            formChanged = false;
+            location.reload();
+        }
+    }
+
+    // auto save on normal fields
+    $(document).on('change keyup', '#supp_id, #paid_amount, #purchaseTable select, #purchaseTable input', function () {
+        savePurchaseDraft();
+    });
+
+    // warn before leaving if not saved
+    window.addEventListener('beforeunload', function (e) {
+        if (formChanged && localStorage.getItem(draftKey)) {
+            e.preventDefault();
+            e.returnValue = '';
+        }
+    });
+
+    // clear draft after successful save
+    @if(session('success'))
+        localStorage.removeItem(draftKey);
+        formChanged = false;
+    @endif
+
+    // restore on page load
+    $(document).ready(function () {
+        restorePurchaseDraft();
+    });
 </script>
 
 @endsection
+

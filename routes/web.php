@@ -54,6 +54,7 @@ Route::get('/purchase/{id}/print', [PurchaseController::class, 'printSingle'])
     
 
 Route::get('/purchase/{id}/pdf', [PurchaseController::class, 'downloadPdf'])->name('purchase.pdf');
+Route::get('/purchase-pos', [PurchaseController::class, 'pos'])->name('purchase.pos');
 
     
 });
