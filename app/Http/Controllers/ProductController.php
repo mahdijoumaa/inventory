@@ -310,4 +310,14 @@ class ProductController extends Controller
     return redirect()->route('products.index')
         ->with('success', 'Product deleted successfully ✅');
     }
+
+    public function getByCategory($id)
+{
+    $products = Product::where('cat_id', $id)
+        ->select('id', 'product_name')
+        ->orderBy('product_name')
+        ->get();
+
+    return response()->json($products);
+}
 }

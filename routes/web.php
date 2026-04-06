@@ -40,6 +40,21 @@ Route::middleware('auth')->group(function () {
          //Route:Purchase
     Route::get('/get-products', [PurchaseController::class, 'getProducts']);
 
+
+Route::get('/products/by-category/{id}', [ProductController::class, 'getByCategory'])
+    ->name('products.byCategory');
+
+    Route::get('/purchase-print', [PurchaseController::class, 'print'])->name('purchase.print');
+
+
+
+Route::get('/purchase/{id}/print', [PurchaseController::class, 'printSingle'])
+    ->name('purchase.print.single');
+
+    
+
+Route::get('/purchase/{id}/pdf', [PurchaseController::class, 'downloadPdf'])->name('purchase.pdf');
+
     
 });
 
